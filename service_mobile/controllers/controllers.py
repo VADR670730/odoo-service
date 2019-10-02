@@ -28,17 +28,25 @@ class ServiceMobile(http.Controller):
     def index_order(self, **kw):
         return http.request.render('service_mobile.index', {
             'root': '/service/all/order/',
+            'upd_url': '/service/%s/order/',
+            'cre_url': '/service/order/create',
+            'snd_url': '/service/%s/order/',
             'order_ids': http.request.env['sale.order'].search([]),
             
         })
         
-    @http.route('/service/<model("sale.order"):order>/order/', auth='user')
+    @http.route('/service/<model("sale.order"):order>/order/', auth='user',website=True)
     def update_order(self, order,**kw):
         return http.request.render('service_mobile.view_order', {
             'root': '/service/%s/order/' % order.id,
-            'partner_ids': http.request.env['res.partner'].search([('is_customer','=',True)]),
+            'partner_ids': http.request.env['res.partner'].search([('customer','=',True)]),
             'order': order,
         })
+
+    @http.route('/service/order/create', auth='user')
+    def create_order(self, order,**kw):
+        order.unlink()
+        self.index_order()
 
     @http.route('/service/<model("sale.order"):order>/order/delete', auth='user')
     def delete_order(self, order,**kw):

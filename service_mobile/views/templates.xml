@@ -1,22 +1,40 @@
 <odoo>
-    <data>
-        <!-- <template id="listing"> -->
-        <!--   <ul> -->
-        <!--     <li t-foreach="objects" t-as="object"> -->
-        <!--       <a t-attf-href="#{ root }/objects/#{ object.id }"> -->
-        <!--         <t t-esc="object.display_name"/> -->
-        <!--       </a> -->
-        <!--     </li> -->
-        <!--   </ul> -->
-        <!-- </template> -->
-        <!-- <template id="object"> -->
-        <!--   <h1><t t-esc="object.display_name"/></h1> -->
-        <!--   <dl> -->
-        <!--     <t t-foreach="object._fields" t-as="field"> -->
-        <!--       <dt><t t-esc="field"/></dt> -->
-        <!--       <dd><t t-esc="object[field]"/></dd> -->
-        <!--     </t> -->
-        <!--   </dl> -->
-        <!-- </template> -->
-    </data>
+  <data>
+    <template id="index">
+        <t t-esc="request"/>
+        <t t-esc="website"/>
+      <ul>
+        <li t-foreach="order_ids" t-as="order">
+          <a t-att-href="'/service/%s/order' % order.id">
+            <t t-esc="order.display_name" />
+          </a>
+          <a t-att-href="'/service/%s/order/delete' % order.id">Delete</a>
+          <a t-att-href="'/service/%s/order/send' % order.id">Send</a>
+        </li>
+      </ul>
+    </template>
+    <template id="view_order">
+    <t t-call="website.layout">
+      <form id="info_form" t-att-action="'/service/%s/order' % order.id" method="post" class="form-horizontal mt32" enctype="multipart/form-data" onsubmit="return formValidate();">
+        <input type="hidden" name="id" t-att-value="order.id" />
+        <div class="form-group">
+          <label class="col-md-3 col-sm-4 control-label" for="foobar1">Customer</label>
+          <div class="col-md-7 col-sm-8">
+            <p class="form-control-static" name="foobar1">
+              <t t-esc="order.partner_id.name" />
+            </p>
+          </div>
+        </div>
+        <div class="col-md-12">
+                                                        <div class="pull-right mb16">
+                                                            <div class="">
+                                                                <button id="submit_btn" class="btn btn-primary btn-lg">Save</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+      </form>
+      </t>
+    </template>
+
+  </data>
 </odoo>
