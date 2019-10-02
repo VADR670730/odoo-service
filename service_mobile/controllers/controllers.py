@@ -22,26 +22,38 @@
 
 from odoo import http
 
+import logging
+# ~ _logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+
+
 class ServiceMobile(http.Controller):
 
     @http.route('/service/all/order/', auth='user')
     def index_order(self, **kw):
         return http.request.render('service_mobile.index', {
             'root': '/service/all/order/',
-            'upd_url': '/service/%s/order/',
-            'cre_url': '/service/order/create',
-            'snd_url': '/service/%s/order/',
             'order_ids': http.request.env['sale.order'].search([]),
             
         })
         
-    @http.route('/service/<model("sale.order"):order>/order/', auth='user',website=True)
-    def update_order(self, order,**kw):
-        return http.request.render('service_mobile.view_order', {
-            'root': '/service/%s/order/' % order.id,
-            'partner_ids': http.request.env['res.partner'].search([('customer','=',True)]),
-            'order': order,
-        })
+    @http.route('/service/<model("sale.order"):order>/order/', auth='user',website=True, methods=['GET','POST'])
+    def update_order(self, order,**post):
+        if post:
+            logger.exception('kw %s' % post)
+            order.note = post.get('note')
+            logger.exception('kw %s' % order.note)
+
+            return self.index_order()
+        else:
+            return http.request.render('service_mobile.view_order', {
+                              'root': '/service/%s/order/' % order.id,
+                              'partner_ids': http.request.env['res.partner'].search([('customer','=',True)]),
+                              'order': order,
+                              'help': {'name':'This is helpstring for name'},
+                               'validation': {'name':'Warning'},
+                              'input_attrs': {},
+                          })
 
     @http.route('/service/order/create', auth='user')
     def create_order(self, order,**kw):

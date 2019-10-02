@@ -18,7 +18,7 @@
     'version': '0.1',
     'license': 'AGPL-3',
     # any module necessary for this one to work correctly
-    'depends': ['website','sale','hr','project'],
+    'depends': ['website','sale_management','hr_timesheet','project'],
 
     # always loaded
     'data': [
